@@ -202,7 +202,6 @@ function renderHeroArticle(article) {
         <img src="${article.image}" alt="${article.title}">
         <div class="hero-article-content">
             <div class="source-info">
-                <img src="${article.source.logo}" alt="${article.source.name}" class="source-logo">
                 <span class="source-name">${article.source.name}</span>
             </div>
             <h2>${article.title}</h2>
@@ -220,7 +219,6 @@ function renderFeaturedArticles(articles) {
             <img src="${article.image}" alt="${article.title}">
             <div class="article-card-content">
                 <div class="source-info">
-                    <img src="${article.source.logo}" alt="${article.source.name}" class="source-logo">
                     <span class="source-name">${article.source.name}</span>
                 </div>
                 <h3>${article.title}</h3>
