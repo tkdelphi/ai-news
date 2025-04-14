@@ -338,5 +338,99 @@
         `).join('');
     }
     </script>
+    <!-- Add this script at the bottom of index.html, right before the closing </body> tag -->
+<script>
+// Extreme cleanup script - add to bottom of index.html
+(function() {
+    // Function to aggressively remove all standalone TechCrunch text nodes
+    function removeArtifacts() {
+        console.log("Running aggressive artifact cleanup");
+        
+        // 1. Directly target any small text node containing TechCrunch
+        document.querySelectorAll('*').forEach(el => {
+            // Skip elements that are supposed to contain the text
+            if (el.classList.contains('source-name') || 
+                el.tagName === 'H3' || 
+                el.tagName === 'H2') {
+                return;
+            }
+            
+            // Check if this element *only* contains TechCrunch or VentureBeat text
+            if (el.childNodes.length === 1 && 
+                el.childNodes[0].nodeType === Node.TEXT_NODE) {
+                const text = el.childNodes[0].textContent.trim();
+                if (text === 'TechCrunch' || text === 'VentureBeat' || text === 'Wired') {
+                    console.log("Removing artifact text element:", el);
+                    el.style.display = 'none';
+                    el.innerHTML = '';
+                }
+            }
+        });
+        
+        // 2. Find any image with techcrunch in alt and remove if not in proper container
+        document.querySelectorAll('img').forEach(img => {
+            if ((img.alt && img.alt.toLowerCase().includes('techcrunch')) || 
+                (img.src && img.src.toLowerCase().includes('techcrunch'))) {
+                
+                // Check if this image is outside a proper article card
+                let isInsideCard = false;
+                let parent = img.parentElement;
+                
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('article-card') || 
+                        parent.classList.contains('hero-article') ||
+                        parent.classList.contains('source-info')) {
+                        isInsideCard = true;
+                        break;
+                    }
+                    parent = parent.parentElement;
+                }
+                
+                // Remove if outside a proper card
+                if (!isInsideCard) {
+                    console.log("Removing artifact image:", img);
+                    img.remove();
+                }
+            }
+        });
+        
+        // 3. Find single-letter orphan text nodes (like leftover parts)
+        document.querySelectorAll('*').forEach(el => {
+            if (el.childNodes.length === 1 && 
+                el.childNodes[0].nodeType === Node.TEXT_NODE &&
+                el.childNodes[0].textContent.trim().length <= 2) {
+                el.innerHTML = '';
+            }
+        });
+    }
+    
+    // Run the cleanup immediately and repeatedly
+    removeArtifacts();
+    
+    // Run several times to catch any that appear after initial load
+    setTimeout(removeArtifacts, 500);
+    setTimeout(removeArtifacts, 1000);
+    setTimeout(removeArtifacts, 2000);
+    
+    // Also set up a MutationObserver to watch for changes and clean up as needed
+    const observer = new MutationObserver(function() {
+        removeArtifacts();
+    });
+    
+    // Observe the entire document for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
+    
+    // Also run the cleanup after any image loads
+    document.addEventListener('load', function(event) {
+        if (event.target.tagName === 'IMG') {
+            setTimeout(removeArtifacts, 100);
+        }
+    }, true);
+})();
+</script>
 </body>
 </html>
