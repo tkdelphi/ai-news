@@ -726,3 +726,44 @@ footer {
     cursor: pointer;
     font-weight: 500;
 }
+/* Add these CSS rules to the very end of your styles.css file */
+
+/* Radical approach to hide any element that contains just TechCrunch text */
+body *:not(.source-name):not(h2):not(h3) {
+    position: relative;
+}
+
+/* Hide any element that contains TechCrunch text without specific classes */
+body *:not(.source-name):not(h2):not(h3):contains('TechCrunch') {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Hide image elements with TechCrunch in alt that are not properly contained */
+img[alt*="TechCrunch"]:not(.source-logo) {
+    display: none !important;
+}
+
+/* Specifically fix the article page */
+.article-grid img[alt*="TechCrunch"],
+.article-grid img[alt*="VentureBeat"],
+.article-grid img[alt*="Wired"] {
+    display: none !important;
+}
+
+/* Add spacing to ensure layout doesn't break when those elements are hidden */
+.article-card {
+    min-height: 400px;
+}
+
+/* Alternatively, you could try using the before pseudoelement to add extra spacing */
+.article-card:before {
+    content: '';
+    display: block;
+    height: 1px;
+    margin-bottom: 10px;
+}
