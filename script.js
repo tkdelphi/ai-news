@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Fetch and render articles from API
     fetchArticlesFromAPI();
-
-    // Set up the TechCrunch artifact cleanup
+    
+    // Setup cleanup (extra protection)
     setupArtifactCleanup();
 });
 
@@ -161,9 +161,6 @@ async function fetchArticlesFromAPI() {
                 footerInfo.innerHTML = `&copy; ${new Date().getFullYear()} NexusAI. Articles last updated: ${lastUpdated.toLocaleString()}`;
             }
         }
-
-        // Clean up any artifacts after rendering
-        removeTechCrunchArtifacts();
         
     } catch (error) {
         console.error('Error fetching articles:', error);
@@ -197,44 +194,116 @@ async function fetchArticlesFromAPI() {
         if (footer) {
             footer.innerHTML = `&copy; ${new Date().getFullYear()} NexusAI. Using sample data (API unavailable). ${error.message}`;
         }
-
-        // Clean up any artifacts even in error case
-        removeTechCrunchArtifacts();
     }
 }
 
-// Render the hero article
+// SOLUTION 2: Complete rewrite of rendering functions using DOM manipulation
+
+// Render the hero article with DOM manipulation to prevent unwanted elements
 function renderHeroArticle(article) {
     const heroArticleElement = document.getElementById('hero-article');
     
-    heroArticleElement.innerHTML = `
-        <img src="${article.image}" alt="${article.title}">
-        <div class="hero-article-content">
-            <div class="source-info">
-                <span class="source-name">${article.source.name}</span>
-            </div>
-            <h2>${article.title}</h2>
-            <a href="${article.link}" class="read-more" target="_blank">Read Full Article</a>
-        </div>
-    `;
+    // Clear previous content
+    heroArticleElement.innerHTML = '';
+    
+    // Create image
+    const img = document.createElement('img');
+    img.src = article.image;
+    img.alt = article.title;
+    heroArticleElement.appendChild(img);
+    
+    // Create content container
+    const content = document.createElement('div');
+    content.className = 'hero-article-content';
+    
+    // Create source info with only name, no logo
+    const sourceInfo = document.createElement('div');
+    sourceInfo.className = 'source-info';
+    
+    const sourceName = document.createElement('span');
+    sourceName.className = 'source-name';
+    sourceName.textContent = article.source.name;
+    sourceInfo.appendChild(sourceName);
+    
+    // Create title
+    const title = document.createElement('h2');
+    title.textContent = article.title;
+    
+    // Create link
+    const link = document.createElement('a');
+    link.className = 'read-more';
+    link.href = article.link;
+    link.target = '_blank';
+    link.textContent = 'Read Full Article';
+    
+    // Append all elements
+    content.appendChild(sourceInfo);
+    content.appendChild(title);
+    content.appendChild(link);
+    heroArticleElement.appendChild(content);
 }
 
-// Render the featured articles
+// Render the featured articles with DOM manipulation to prevent unwanted elements
 function renderFeaturedArticles(articles) {
     const featuredArticlesElement = document.getElementById('featured-articles');
     
-    featuredArticlesElement.innerHTML = articles.map(article => `
-        <div class="article-card">
-            <img src="${article.image}" alt="${article.title}">
-            <div class="article-card-content">
-                <div class="source-info">
-                    <span class="source-name">${article.source.name}</span>
-                </div>
-                <h3>${article.title}</h3>
-                <a href="${article.link}" class="read-more" target="_blank">Read Full Article</a>
-            </div>
-        </div>
-    `).join('');
+    // Clear the container first
+    featuredArticlesElement.innerHTML = '';
+    
+    // Create each article card with DOM methods instead of innerHTML
+    articles.forEach(article => {
+        // Create article card
+        const card = document.createElement('div');
+        card.className = 'article-card';
+        
+        // Create image
+        const img = document.createElement('img');
+        img.src = article.image;
+        img.alt = article.title;
+        card.appendChild(img);
+        
+        // Create content container
+        const content = document.createElement('div');
+        content.className = 'article-card-content';
+        
+        // Create source info with only name, no logo
+        const sourceInfo = document.createElement('div');
+        sourceInfo.className = 'source-info';
+        
+        const sourceName = document.createElement('span');
+        sourceName.className = 'source-name';
+        sourceName.textContent = article.source.name;
+        sourceInfo.appendChild(sourceName);
+        
+        // Create title
+        const title = document.createElement('h3');
+        title.textContent = article.title;
+        
+        // Create link
+        const link = document.createElement('a');
+        link.className = 'read-more';
+        link.href = article.link;
+        link.target = '_blank';
+        link.textContent = 'Read Full Article';
+        
+        // Append all elements
+        content.appendChild(sourceInfo);
+        content.appendChild(title);
+        content.appendChild(link);
+        card.appendChild(content);
+        
+        // Add to container
+        featuredArticlesElement.appendChild(card);
+    });
+}
+
+// Direct render functions just call the main render functions
+function renderHeroArticleDirect(article) {
+    renderHeroArticle(article);
+}
+
+function renderArticlesDirect(articles) {
+    renderFeaturedArticles(articles);
 }
 
 // Add a function to periodically refresh articles
@@ -258,120 +327,86 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Direct render functions for backup loading
-function renderHeroArticleDirect(article) {
-    const heroArticleElement = document.getElementById('hero-article');
-    
-    heroArticleElement.innerHTML = `
-        <img src="${article.image}" alt="${article.title}">
-        <div class="hero-article-content">
-            <div class="source-info">
-                <span class="source-name">${article.source.name}</span>
-            </div>
-            <h2>${article.title}</h2>
-            <a href="${article.link}" class="read-more" target="_blank">Read Full Article</a>
-        </div>
-    `;
-
-    // Clean up any artifacts after rendering
-    removeTechCrunchArtifacts();
-}
-
-function renderArticlesDirect(articles) {
-    const featuredArticlesElement = document.getElementById('featured-articles');
-    
-    featuredArticlesElement.innerHTML = articles.map(article => `
-        <div class="article-card">
-            <img src="${article.image}" alt="${article.title}">
-            <div class="article-card-content">
-                <div class="source-info">
-                    <span class="source-name">${article.source.name}</span>
-                </div>
-                <h3>${article.title}</h3>
-                <a href="${article.link}" class="read-more" target="_blank">Read Full Article</a>
-            </div>
-        </div>
-    `).join('');
-
-    // Clean up any artifacts after rendering
-    removeTechCrunchArtifacts();
-}
-
-// Setup the artifact cleanup functionality
+// Extra protection: setup artifact cleanup as well
 function setupArtifactCleanup() {
-    // Run cleanup when DOM is fully loaded
+    // Function to remove all TechCrunch text nodes and images
+    function removeTechCrunchArtifacts() {
+        console.log("Running TechCrunch artifact cleanup...");
+        
+        try {
+            // Find all TechCrunch images and remove them
+            document.querySelectorAll('img[alt="TechCrunch"]').forEach(img => {
+                img.remove();
+            });
+            
+            // Remove any element that just contains TechCrunch
+            const walker = document.createTreeWalker(
+                document.body, 
+                NodeFilter.SHOW_ELEMENT, 
+                null, 
+                false
+            );
+            
+            let element;
+            let elementsToRemove = [];
+            
+            while (element = walker.nextNode()) {
+                if (element.childNodes.length === 1 && 
+                    element.childNodes[0].nodeType === Node.TEXT_NODE && 
+                    element.childNodes[0].textContent === 'TechCrunch' &&
+                    !element.classList.contains('source-name')) {
+                    elementsToRemove.push(element);
+                }
+            }
+            
+            // Remove identified elements
+            elementsToRemove.forEach(el => el.remove());
+            
+            // Additional aggressive cleanup - find any text node containing just TechCrunch
+            const textWalker = document.createTreeWalker(
+                document.body, 
+                NodeFilter.SHOW_TEXT, 
+                null, 
+                false
+            );
+            
+            let textNode;
+            let textNodesToModify = [];
+            
+            while (textNode = textWalker.nextNode()) {
+                if (textNode.textContent.trim() === 'TechCrunch' &&
+                    textNode.parentElement &&
+                    !textNode.parentElement.classList.contains('source-name')) {
+                    textNodesToModify.push(textNode);
+                }
+            }
+            
+            // Remove or modify text nodes
+            textNodesToModify.forEach(node => {
+                node.textContent = '';
+            });
+        } catch (error) {
+            console.error("Error in cleanup script:", error);
+        }
+    }
+    
+    // Run the cleanup on page load
     removeTechCrunchArtifacts();
     
-    // Run cleanup after a small delay to catch any async loaded content
+    // Run cleanup multiple times to catch any late-loading artifacts
+    setTimeout(removeTechCrunchArtifacts, 500);
     setTimeout(removeTechCrunchArtifacts, 1000);
     setTimeout(removeTechCrunchArtifacts, 2000);
-    setTimeout(removeTechCrunchArtifacts, 3000);
     
-    // Also observe for DOM changes to clean up artifacts as they appear
-    const observer = new MutationObserver(function(mutations) {
+    // Set up an observer to monitor DOM changes and remove artifacts
+    const observer = new MutationObserver(() => {
         removeTechCrunchArtifacts();
     });
     
-    // Observe changes to the hero article and featured articles sections
-    const heroArticle = document.getElementById('hero-article');
-    const featuredArticles = document.getElementById('featured-articles');
-    
-    if (heroArticle) {
-        observer.observe(heroArticle, { childList: true, subtree: true });
-    }
-    
-    if (featuredArticles) {
-        observer.observe(featuredArticles, { childList: true, subtree: true });
-    }
-}
-
-// Function to remove all TechCrunch text nodes and images
-function removeTechCrunchArtifacts() {
-    console.log("Running TechCrunch artifact cleanup...");
-    
-    // Find all text nodes in the document
-    const walker = document.createTreeWalker(
-        document.body, 
-        NodeFilter.SHOW_TEXT, 
-        null, 
-        false
-    );
-    
-    // Array to store text nodes to remove
-    const nodesToModify = [];
-    
-    // Find all nodes containing "TechCrunch" text
-    let node;
-    while (node = walker.nextNode()) {
-        if (node.textContent.includes('TechCrunch')) {
-            nodesToModify.push(node);
-        }
-    }
-    
-    // Replace "TechCrunch" with empty string in identified nodes
-    nodesToModify.forEach(node => {
-        // Check if this is the source name that should be kept
-        const isSourceName = node.parentNode && 
-                            (node.parentNode.classList.contains('source-name') || 
-                             node.parentNode.tagName === 'H3' || 
-                             node.parentNode.classList.contains('article-card-content'));
-        
-        // If it's not a proper source name, remove the TechCrunch text
-        if (!isSourceName) {
-            console.log("Removing TechCrunch text from:", node.parentNode);
-            node.textContent = '';
-        }
-    });
-    
-    // Find and remove all img tags with TechCrunch
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        if (img.alt && img.alt.includes('TechCrunch')) {
-            // Only remove if it's not a proper source logo
-            if (!img.classList.contains('source-logo')) {
-                console.log("Removing TechCrunch image:", img);
-                img.remove();
-            }
-        }
+    // Start observing the document body
+    observer.observe(document.body, { 
+        childList: true, 
+        subtree: true,
+        characterData: true
     });
 }
