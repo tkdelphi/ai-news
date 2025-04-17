@@ -448,7 +448,7 @@ def index():
     return app.send_static_file('index.html')
 
 @app.route('/api/summary')
-def get_summary():
+def api_summary():
     """Generate a text summary of all articles"""
     try:
         # Current date for the file
@@ -506,7 +506,7 @@ def get_summary():
         return jsonify({"error": "An error occurred while generating the summary"}), 500
 
 @app.route('/api/articles')
-def get_articles():
+def api_articles():
     """API endpoint to get articles"""
     # Check if cache needs refreshing (older than 30 minutes or empty)
     if (articles_cache['last_updated'] is None or 
