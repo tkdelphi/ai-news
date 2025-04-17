@@ -342,6 +342,11 @@ def index():
     """Serve the main HTML page"""
     return send_from_directory(BASE_DIR, 'index.html')
 
+@app.route('/test')
+def test_endpoint():
+    """Simple test endpoint that just returns text"""
+    return "Test endpoint working!"
+
 @app.route('/<path:path>')
 def static_files(path):
     """Serve static files like CSS, JS, images"""

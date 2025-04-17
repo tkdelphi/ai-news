@@ -336,22 +336,15 @@ function initDownloadSummary() {
     const downloadBtn = document.getElementById('download-summary-btn');
     
     if (downloadBtn) {
-        downloadBtn.addEventListener('click', () => {
+        // Make the button a direct link instead of using JavaScript
+        downloadBtn.addEventListener('click', (event) => {
             // Show loading state
             const originalText = downloadBtn.innerHTML;
             downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
             downloadBtn.disabled = true;
             
-            // Create a direct link to the summary endpoint
-            const summaryUrl = `${API_CONFIG.BASE_URL}/api/summary`;
-            
-            // Create a hidden link and click it to trigger the download
-            const link = document.createElement('a');
-            link.href = summaryUrl;
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // Simple approach: Just open the URL directly
+            window.open('/test', '_blank');
             
             // Reset button after a short delay
             setTimeout(() => {
@@ -359,6 +352,11 @@ function initDownloadSummary() {
                 downloadBtn.disabled = false;
             }, 1500);
         });
+        
+        // Also add a simple console message to confirm the function is running
+        console.log('Download button initialized!');
+    } else {
+        console.error('Download button not found in the DOM!');
     }
 }
 

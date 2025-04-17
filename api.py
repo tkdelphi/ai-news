@@ -447,6 +447,11 @@ def index():
     """Serve the main page"""
     return app.send_static_file('index.html')
 
+@app.route('/test')
+def test_endpoint():
+    """Simple test endpoint that just returns text"""
+    return "Test endpoint working!"
+
 @app.route('/api/summary')
 def api_summary():
     """Generate a text summary of all articles"""
