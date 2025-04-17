@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Setup cleanup (extra protection)
     setupArtifactCleanup();
+    
+    // Initialize download summary button
+    initDownloadSummary();
 });
 
 // Theme toggle functionality
@@ -324,8 +327,40 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'F5' || (event.ctrlKey && event.key === 'r')) {
         event.preventDefault();
         fetchArticlesFromAPI();
+        console.log('Manual refresh triggered');
     }
 });
+
+// Initialize the download summary functionality
+function initDownloadSummary() {
+    const downloadBtn = document.getElementById('download-summary-btn');
+    
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+            // Show loading state
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            downloadBtn.disabled = true;
+            
+            // Create a direct link to the summary endpoint
+            const summaryUrl = `${API_CONFIG.BASE_URL}/api/summary`;
+            
+            // Create a hidden link and click it to trigger the download
+            const link = document.createElement('a');
+            link.href = summaryUrl;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Reset button after a short delay
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.disabled = false;
+            }, 1500);
+        });
+    }
+}
 
 // Extra protection: setup artifact cleanup as well
 function setupArtifactCleanup() {

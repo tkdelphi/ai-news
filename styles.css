@@ -313,9 +313,7 @@ main {
 
 .featured-section h2 {
     font-size: 1.8rem;
-    margin-bottom: 25px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent-color);
+    margin-bottom: 0;
     display: inline-block;
 }
 
@@ -383,6 +381,37 @@ footer {
 
 .footer-logo p {
     color: var(--text-secondary);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+}
+
+.download-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.download-btn:hover {
+    background-color: #3367d6;
+}
+
+.download-btn i {
+    font-size: 1rem;
 }
 
 .footer-links h3, .footer-newsletter h3 {

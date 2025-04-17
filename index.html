@@ -127,7 +127,12 @@ function renderArticlesDirect(articles) {
         </section>
 
         <section class="featured-section container">
-            <h2>Latest AI News</h2>
+            <div class="section-header">
+                <h2>Latest AI News</h2>
+                <button id="download-summary-btn" class="download-btn">
+                    <i class="fas fa-download"></i> Download News Summary
+                </button>
+            </div>
             <div id="featured-articles" class="article-grid">
                 <!-- Featured articles will be loaded here -->
                 <div class="loading">Loading articles...</div>
